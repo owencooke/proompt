@@ -4,6 +4,7 @@ import MenuIcon from "../assets/menu.svg";
 
 const NavWrapper = styled.div`
   background-color: ${colors.secondary};
+  color: ${colors.primary};
   height: 80px;
   display: flex;
   justify-content: space-between;
