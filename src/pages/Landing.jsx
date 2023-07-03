@@ -1,13 +1,13 @@
 import Navbar from "../components/Navbar";
-import Icon from "../components/Icon";
+import TitledIcon from "../components/TitledIcon";
 import { styled } from "styled-components";
 import colors from "../colors.json";
 import Carousel from "react-multi-carousel";
 import "react-multi-carousel/lib/styles.css";
-import BooksIcon from "../assets/bookshelf-library.svg";
-import ChatbotIcon from "../assets/chat-bot.svg";
-import DiscoverIcon from "../assets/global-search.svg";
-import VariableIcon from "../assets/variable-plus.svg";
+import { ReactComponent as BooksIcon } from "../assets/bookshelf-library.svg";
+import { ReactComponent as ChatbotIcon } from "../assets/chat-bot.svg";
+import { ReactComponent as DiscoverIcon } from "../assets/global-search.svg";
+import { ReactComponent as VariableIcon } from "../assets/variable-plus.svg";
 
 const PageWrapper = styled.div`
   text-align: center;
@@ -62,29 +62,41 @@ function Landing() {
         containerClass="carousel-container"
         itemClass="carousel-item-padding-40-px"
       >
-        <Icon
-          icon={BooksIcon}
+        <TitledIcon
+          icon={
+            <BooksIcon fill={colors.text} height={iconSize} width={iconSize} />
+          }
           text="easily store prompts in your own personal library"
-          iconHeight={iconSize}
-          iconWidth={iconSize}
         />
-        <Icon
-          icon={VariableIcon}
+        <TitledIcon
+          icon={
+            <VariableIcon
+              stroke={colors.text}
+              height={iconSize}
+              width={iconSize}
+            />
+          }
           text="reuse common prompts via modifiable variables"
-          iconHeight={iconSize}
-          iconWidth={iconSize}
         />
-        <Icon
-          icon={ChatbotIcon}
+        <TitledIcon
+          icon={
+            <ChatbotIcon
+              fill={colors.text}
+              height={iconSize}
+              width={iconSize}
+            />
+          }
           text="seamlessly try and use prompts through an integrated AI chatbot window"
-          iconHeight={iconSize}
-          iconWidth={iconSize}
         />
-        <Icon
-          icon={DiscoverIcon}
+        <TitledIcon
+          icon={
+            <DiscoverIcon
+              stroke={colors.text}
+              height={iconSize}
+              width={iconSize}
+            />
+          }
           text="discover high-quality prompts from other users"
-          iconHeight={iconSize}
-          iconWidth={iconSize}
         />
       </Carousel>
     </PageWrapper>
