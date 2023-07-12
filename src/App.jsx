@@ -1,10 +1,22 @@
-// import { useState } from "react";
+import {
+  BrowserRouter as BrowserRouter,
+  Route,
+  Routes,
+} from "react-router-dom";
+import Navbar from "./components/Navbar";
 import Landing from "./pages/Landing";
 
 function App() {
-  // const [count, setCount] = useState(0);
-
-  return <Landing />;
+  return (
+    <BrowserRouter>
+      <>
+        <Navbar />
+        <Routes>
+          <Route exact path="/" element={<Landing />} />
+        </Routes>
+      </>
+    </BrowserRouter>
+  );
 }
 
 export default App;

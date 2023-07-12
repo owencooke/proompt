@@ -1,4 +1,3 @@
-import Navbar from "../components/Navbar";
 import TitledIcon from "../components/TitledIcon";
 import { styled } from "styled-components";
 import colors from "../colors.json";
@@ -76,7 +75,6 @@ function Landing() {
 
   return (
     <PageWrapper>
-      <Navbar />
       <TitleWrapper>
         save, reuse, and share your favorite AI prompts
       </TitleWrapper>
