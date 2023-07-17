@@ -109,7 +109,7 @@ function Navbar() {
               <SearchIcon height="24" width="24" fill={colors.text} />
             </SearchWrapper>
             <StyledLink to={"/"}>Profile</StyledLink>
-            <StyledLink to={"/"}>Library</StyledLink>
+            <StyledLink to={"/library"}>Library</StyledLink>
             <StyledLink to={"/"}>Explore</StyledLink>
             <StyledLink to={"/"}>FAQ</StyledLink>
           </MenuDropdown>
