@@ -76,10 +76,18 @@ function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
+  const handleClose = () => setIsOpen(false);
+
   return (
     <NavWrapper>
       <Nav>
-        proompt
+        <Link
+          to="/"
+          onClick={handleClose}
+          style={{ textDecoration: "none", color: colors.primary }}
+        >
+          proompt
+        </Link>
         <div
           style={{ cursor: "pointer" }}
           onMouseEnter={() => setIsHovered(true)}
@@ -108,10 +116,18 @@ function Navbar() {
               <SearchInput placeholder="Search"></SearchInput>
               <SearchIcon height="24" width="24" fill={colors.text} />
             </SearchWrapper>
-            <StyledLink to={"/"}>Profile</StyledLink>
-            <StyledLink to={"/library"}>Library</StyledLink>
-            <StyledLink to={"/"}>Explore</StyledLink>
-            <StyledLink to={"/"}>FAQ</StyledLink>
+            <StyledLink to="/" onClick={handleClose}>
+              Profile
+            </StyledLink>
+            <StyledLink to="/library" onClick={handleClose}>
+              Library
+            </StyledLink>
+            <StyledLink to="/" onClick={handleClose}>
+              Explore
+            </StyledLink>
+            <StyledLink to="/" onClick={handleClose}>
+              FAQ
+            </StyledLink>
           </MenuDropdown>
           <BlurOverlay />
         </>
