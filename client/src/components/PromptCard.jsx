@@ -2,6 +2,8 @@ import { useState } from "react";
 import { styled } from "styled-components";
 import colors from "../colors.json";
 import PropTypes from "prop-types";
+import { Dropdown } from "antd";
+import { TagFilled } from "@ant-design/icons";
 
 const CardWrapper = styled.div`
   background-color: ${colors.secondary};
@@ -23,9 +25,9 @@ const TitleWrapper = styled.div`
   font-size: 20px;
 `;
 
-const ButtonGroup = styled.div`
+const Flexbox = styled.div`
   display: flex;
-  gap: 8px;
+  gap: 1rem;
   align-items: center;
 `;
 
@@ -49,22 +51,72 @@ const FilterTag = styled.div`
 function PromptCard(props) {
   const { title, prompt, variableCount, categories } = props;
   const [isOpen, setIsOpen] = useState(false);
+
+  const menuItems = [
+    {
+      label: `${isOpen ? "Hide" : "Show"} details`,
+      key: "0",
+    },
+    {
+      label: "Edit",
+      key: "1",
+    },
+    {
+      label: "Delete",
+      key: "2",
+      danger: true,
+    },
+    {
+      label: "Share",
+      key: "3",
+    },
+  ];
+
+  const handleButtonClick = (e) => {
+    console.log("click left button", e);
+  };
+
+  const handleMenuClick = (e) => {
+    switch (parseInt(e.key)) {
+      case 0:
+        setIsOpen((prev) => !prev);
+        break;
+      case 1:
+        // FIXME edit: redirect to prompt editor
+        break;
+      case 2:
+        // FIXME delete: modal confirm delete prompt
+        break;
+      case 3:
+        // FIXME delete: shareable prompt link
+        break;
+    }
+  };
+
   return (
     <CardWrapper>
       <TitleWrapper>
         {title}
-        <ButtonGroup>
-          <button onClick={() => setIsOpen((prev) => !prev)}>Details</button>
-          <button>Open</button>
-        </ButtonGroup>
+        <Dropdown.Button
+          menu={{ items: menuItems, onClick: handleMenuClick }}
+          onClick={handleButtonClick}
+          style={{ width: "fit-content" }}
+        >
+          chat
+        </Dropdown.Button>
       </TitleWrapper>
       {isOpen && (
         <>
           <PromptText>{prompt}</PromptText>
-          {categories.map((category, i) => (
-            <FilterTag key={i}>{category}</FilterTag>
-          ))}
-          <PromptText>{variableCount} variables</PromptText>
+          <Flexbox style={{ justifyContent: "space-between" }}>
+            <Flexbox>
+              <TagFilled style={{ color: colors.primary }} />
+              {categories.map((category, i) => (
+                <FilterTag key={i}>{category}</FilterTag>
+              ))}
+            </Flexbox>
+            <PromptText>{variableCount} variables</PromptText>
+          </Flexbox>
         </>
       )}
     </CardWrapper>
