@@ -8,11 +8,9 @@ A web app for saving, reusing, and sharing your favourite AI prompts, built usin
 
 ## Current Progress
 
-Finished implementing the library's prompt cards. Added a "Filters" select dropdown to the library page.
+Began implementing the UI for using Prompts, with chat bubbles and a send message bar.
 
 Also experimented using the OpenAI API with an Express backend, testing routes via Postman.
-
-Next step is to create the chatbot interface.
 
 See the project's [Figma design file](https://www.figma.com/file/yAReOYpwFXfgAT1j23mwOr/proompt?type=design&node-id=3%3A6&mode=design&t=JxQhzeXlr1peugGr-1) for upcoming features.
 
