@@ -5,8 +5,9 @@ const app = new express();
 
 // Middleware
 app.use(cors());
+app.use(express.json());
 
 // Routes
-app.use("/", require("./routes/messages"));
+app.use("/prompts", require("./routes/prompts"));
 
 module.exports = app;
