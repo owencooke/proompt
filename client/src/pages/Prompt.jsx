@@ -1,8 +1,9 @@
 import { useEffect, useRef, useState } from "react";
 import { styled } from "styled-components";
 import colors from "../colors.json";
-import { Input, Button } from "antd";
+import { Input, Button, Skeleton } from "antd";
 import { EditOutlined, SendOutlined } from "@ant-design/icons";
+import CommonApi from "../util";
 
 const PageWrapper = styled.div`
   padding: 2rem;
@@ -34,7 +35,7 @@ const ChatBubble = styled.div`
   color: ${colors.primary};
   padding: 1rem;
   border-radius: 1rem;
-  width: 75%;
+  max-width: 75%;
 `;
 
 const MessageWrapper = styled.div`
@@ -53,15 +54,22 @@ const MessageWrapper = styled.div`
 const CorrectivePagePadding = 96;
 
 const defaultChats = [
-  "We want to create an AI for prioritizing what areas to fix power outages in first in states of emergency. we want to give as input different parameters such as population, types of buildings, etc.",
-  "To create a neural network for prioritizing power outage fixes, you could use Python and a deep learning framework such as TensorFlow or PyTorch.",
-  "We want to create an AI for prioritizing what areas to fix power outages in first in states of emergency. we want to give as input different parameters such as population, types of buildings, etc.",
-  "To create a neural network for prioritizing power outage fixes, you could use Python and a deep learning framework such as TensorFlow or PyTorch.",
+  {
+    role: "user",
+    content:
+      "We want to create an AI for prioritizing what areas to fix power outages in first in states of emergency. we want to give as input different parameters such as population, types of buildings, etc.",
+  },
+  {
+    role: "assistant",
+    content:
+      "To create a neural network for prioritizing power outage fixes, you could use Python and a deep learning framework such as TensorFlow or PyTorch.",
+  },
 ];
 
 function Prompt() {
   const [chats, setChats] = useState(defaultChats);
-  const [message, setMessage] = useState("");
+  const [messageToSend, setMessageToSend] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const messageBoxRef = useRef(null);
   const [scrollPadding, setScrollPadding] = useState(0);
@@ -81,7 +89,26 @@ function Prompt() {
     return () => observer.disconnect;
   }, [scrollPadding]);
 
-  const handleSend = () => setChats((prevChats) => [...prevChats, message]);
+  useEffect(() => {
+    if (chats.length || loading) {
+      document.body.scrollIntoView({
+        behavior: "smooth",
+        block: "end",
+      });
+    }
+  }, [chats, loading]);
+
+  const handleSend = async () => {
+    const newChats = [...chats, { role: "user", content: messageToSend }];
+    setChats(newChats);
+    setMessageToSend("");
+    setTimeout(() => {
+      setLoading(true);
+    }, 2000);
+    const response = await CommonApi.post("/prompts", newChats);
+    setChats((prevChats) => [...prevChats, response]);
+    setLoading(false);
+  };
 
   return (
     <>
@@ -92,8 +119,9 @@ function Prompt() {
         </TitleWrapper>
         <AlternatingChats>
           {chats.map((chat, idx) => (
-            <ChatBubble key={idx}>{chat}</ChatBubble>
+            <ChatBubble key={idx}>{chat.content}</ChatBubble>
           ))}
+          {loading && <Skeleton.Input active block style={{ width: "75%" }} />}
         </AlternatingChats>
       </PageWrapper>
       <MessageWrapper ref={messageBoxRef}>
@@ -104,8 +132,8 @@ function Prompt() {
           }}
           autoSize={{ maxRows: 8 }}
           placeholder="Send a message"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
+          value={messageToSend}
+          onChange={(e) => setMessageToSend(e.target.value)}
           maxLength={1000}
         ></Input.TextArea>
         <Button
