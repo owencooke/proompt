@@ -4,6 +4,7 @@ import colors from "../colors.json";
 import { Input, Button, Skeleton } from "antd";
 import { EditOutlined, SendOutlined } from "@ant-design/icons";
 import CommonApi from "../util";
+import PromptEditDrawer from "../components/PromptEditDrawer";
 
 const PageWrapper = styled.div`
   padding: 2rem;
@@ -53,26 +54,34 @@ const MessageWrapper = styled.div`
 
 const CorrectivePagePadding = 96;
 
-const defaultChats = [
-  {
-    role: "user",
-    content:
-      "We want to create an AI for prioritizing what areas to fix power outages in first in states of emergency. we want to give as input different parameters such as population, types of buildings, etc.",
+const testPrompt = {
+  title: "Marketing Email",
+  prompt: `Write a draft for my marketing email about $TOPIC$. Include a call-to-action that encourages people to $ACTION$. Write it to $AUDIENCE$ in a $TONE$ tone of voice.`,
+  variables: {
+    TOPIC: "a sale on TVs",
+    ACTION: "check out the deals online",
+    AUDIENCE: "the general public that watches TV",
+    TONE: "excited",
   },
-  {
-    role: "assistant",
-    content:
-      "To create a neural network for prioritizing power outage fixes, you could use Python and a deep learning framework such as TensorFlow or PyTorch.",
-  },
-];
+};
+
+const getPrompt = () => {
+  let { prompt } = testPrompt;
+  for (const variable in testPrompt.variables) {
+    prompt = prompt.replace(`$${variable}$`, testPrompt.variables[variable]);
+  }
+  return prompt;
+};
 
 function Prompt() {
-  const [chats, setChats] = useState(defaultChats);
-  const [messageToSend, setMessageToSend] = useState("");
+  const [chats, setChats] = useState([]);
+  const [messageToSend, setMessageToSend] = useState(() => getPrompt());
   const [loading, setLoading] = useState(false);
 
   const messageBoxRef = useRef(null);
   const [scrollPadding, setScrollPadding] = useState(0);
+
+  const [editDrawerOpen, setEditDrawerOpen] = useState(false);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -110,12 +119,21 @@ function Prompt() {
     setLoading(false);
   };
 
+  const handleCloseEdit = () => {
+    setEditDrawerOpen(false);
+  };
+
   return (
     <>
       <PageWrapper style={{ paddingBottom: `${scrollPadding}px` }}>
         <TitleWrapper>
           title of prompt
-          <Button size="large" type="primary" icon={<EditOutlined />} />
+          <Button
+            size="large"
+            type="primary"
+            icon={<EditOutlined />}
+            onClick={() => setEditDrawerOpen(true)}
+          />
         </TitleWrapper>
         <AlternatingChats>
           {chats.map((chat, idx) => (
@@ -143,6 +161,12 @@ function Prompt() {
           onClick={handleSend}
         />
       </MessageWrapper>
+      <PromptEditDrawer
+        open={editDrawerOpen}
+        onSave={(newPrompt) => console.log(newPrompt)}
+        onClose={handleCloseEdit}
+        initialPrompt={testPrompt}
+      />
     </>
   );
 }
