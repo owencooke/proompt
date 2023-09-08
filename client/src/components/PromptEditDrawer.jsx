@@ -1,13 +1,23 @@
 import { useState } from "react";
 import { Drawer, Input, Button } from "antd";
+import { PlusOutlined, MinusCircleOutlined } from "@ant-design/icons";
 import PropTypes from "prop-types";
 import { styled } from "styled-components";
 import colors from "../colors.json";
 
+const FormGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-weight: bold;
+  font-size: 16px;
+`;
+
 const VariableRow = styled.div`
   display: flex;
+  align-items: center;
   gap: 2rem;
-  h3 {
+  span {
     width: 100%;
   }
 `;
@@ -52,6 +62,19 @@ function PromptEditDrawer(props) {
               }))
             }
           />
+          <Button
+            type="text"
+            danger
+            icon={<MinusCircleOutlined />}
+            onClick={() => {
+              setVariables((oldVars) => {
+                const newVars = { ...oldVars };
+                delete newVars[variable];
+                return newVars;
+              });
+              setPrompt((oldPrompt) => oldPrompt.replace(`$${variable}$`, ""));
+            }}
+          />
         </VariableRow>
       )
     );
@@ -66,18 +89,27 @@ function PromptEditDrawer(props) {
     });
   };
 
+  const handleCancel = () => {
+    setTimeout(() => {
+      setTitle(initialPrompt.title);
+      setPrompt(initialPrompt.prompt);
+      setVariables(initialPrompt?.variables || {});
+    }, 500);
+    onClose();
+  };
+
   return (
     <Drawer
       title="edit"
       open={open}
-      onClose={onClose}
+      onClose={handleCancel}
       style={{
         backgroundColor: colors.primary,
       }}
       bodyStyle={{
         display: "flex",
         flexDirection: "column",
-        gap: "1rem",
+        gap: "1.5rem",
       }}
       extra={
         <Button type="primary" onClick={handleSave}>
@@ -85,32 +117,47 @@ function PromptEditDrawer(props) {
         </Button>
       }
     >
-      <h3>title</h3>
-      <Input
-        style={{
-          minHeight: "2.5rem",
-          fontSize: "16px",
-        }}
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        maxLength={1000}
-      ></Input>
-      <h3>prompt</h3>
-      <Input.TextArea
-        style={{
-          minHeight: "2.5rem",
-          fontSize: "16px",
-        }}
-        autoSize
-        value={prompt}
-        onChange={(e) => setPrompt(e.target.value)}
-        maxLength={1000}
-      ></Input.TextArea>
-      <VariableRow>
-        <h3>variable</h3>
-        <h3>value</h3>
-      </VariableRow>
-      {renderVariables()}
+      <FormGroup>
+        title
+        <Input
+          style={{
+            minHeight: "2.5rem",
+            fontSize: "16px",
+          }}
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          maxLength={1000}
+        ></Input>
+      </FormGroup>
+      <FormGroup>
+        prompt
+        <Input.TextArea
+          style={{
+            minHeight: "2.5rem",
+            fontSize: "16px",
+          }}
+          autoSize
+          value={prompt}
+          onChange={(e) => setPrompt(e.target.value)}
+          maxLength={1000}
+        ></Input.TextArea>
+      </FormGroup>
+
+      <FormGroup>
+        <VariableRow>
+          <span>variable</span>
+          <span>value</span>
+          <svg height="16" width="48"></svg>
+        </VariableRow>
+        {renderVariables()}
+        <Button
+          icon={<PlusOutlined />}
+          style={{ width: "fit-content" }}
+          onClick={() => setVariables((oldVars) => ({ ...oldVars, NEW: "" }))}
+        >
+          New variable
+        </Button>
+      </FormGroup>
     </Drawer>
   );
 }

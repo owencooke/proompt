@@ -65,17 +65,19 @@ const testPrompt = {
   },
 };
 
-const getPrompt = () => {
-  let { prompt } = testPrompt;
-  for (const variable in testPrompt.variables) {
-    prompt = prompt.replace(`$${variable}$`, testPrompt.variables[variable]);
+const getMsgFromPrompt = (prompt) => {
+  let message = prompt.prompt;
+  for (const variable in prompt.variables) {
+    message = message.replace(`$${variable}$`, prompt.variables[variable]);
   }
-  return prompt;
+  return message;
 };
 
 function Prompt() {
   const [chats, setChats] = useState([]);
-  const [messageToSend, setMessageToSend] = useState(() => getPrompt());
+  const [messageToSend, setMessageToSend] = useState(() =>
+    getMsgFromPrompt(testPrompt)
+  );
   const [loading, setLoading] = useState(false);
 
   const messageBoxRef = useRef(null);
@@ -117,6 +119,12 @@ function Prompt() {
     const response = await CommonApi.post("/prompts", newChats);
     setChats((prevChats) => [...prevChats, response]);
     setLoading(false);
+  };
+
+  const handleEdit = (newPrompt) => {
+    // FIXME call to PATCH /prompts
+    setMessageToSend(getMsgFromPrompt(newPrompt));
+    setEditDrawerOpen(false);
   };
 
   const handleCloseEdit = () => {
@@ -163,7 +171,7 @@ function Prompt() {
       </MessageWrapper>
       <PromptEditDrawer
         open={editDrawerOpen}
-        onSave={(newPrompt) => console.log(newPrompt)}
+        onSave={handleEdit}
         onClose={handleCloseEdit}
         initialPrompt={testPrompt}
       />
