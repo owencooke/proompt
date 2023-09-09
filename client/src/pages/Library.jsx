@@ -1,8 +1,11 @@
+import { useState } from "react";
 import { styled } from "styled-components";
 import colors from "../colors.json";
 import { prompts } from "../mock/prompts";
 import PromptCard from "../components/PromptCard";
-import { Button, Select } from "antd";
+import { Button, Select, Modal } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import PromptFields from "../components/PromptFields";
 
 const PageWrapper = styled.div`
   /* text-align: center; */
@@ -27,7 +30,26 @@ const filters = [
   { label: "administration", value: "administration" },
 ];
 
+const defaultPrompt = {
+  title: "",
+  prompt: "",
+  variables: {},
+};
+
 function Library() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [prompt, setPrompt] = useState(defaultPrompt);
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setPrompt(defaultPrompt);
+  };
+
+  const handleCreate = () => {
+    // FIXME POST /prompt
+    closeModal();
+  };
+
   const handleChange = (value) => {
     console.log(`selected ${value}`);
   };
@@ -36,7 +58,12 @@ function Library() {
     <PageWrapper>
       <TitleWrapper>
         library
-        <Button size="large" type="primary">
+        <Button
+          size="large"
+          type="primary"
+          icon={<PlusOutlined />}
+          onClick={() => setIsModalOpen(true)}
+        >
           new
         </Button>
       </TitleWrapper>
@@ -57,6 +84,16 @@ function Library() {
           categories={prompt.categories}
         />
       ))}
+      <Modal
+        bodyStyle={{ paddingBlock: "1.5rem" }}
+        title={<h3>create a new prompt</h3>}
+        open={isModalOpen}
+        okText="Create"
+        onOk={handleCreate}
+        onCancel={closeModal}
+      >
+        <PromptFields prompt={prompt} setPrompt={setPrompt} />
+      </Modal>
     </PageWrapper>
   );
 }
