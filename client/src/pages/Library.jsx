@@ -6,6 +6,7 @@ import PromptCard from "../components/PromptCard";
 import { Button, Select, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import PromptFields from "../components/PromptFields";
+import CommonApi from "../util";
 
 const PageWrapper = styled.div`
   /* text-align: center; */
@@ -45,8 +46,8 @@ function Library() {
     setPrompt(defaultPrompt);
   };
 
-  const handleCreate = () => {
-    // FIXME POST /prompt
+  const handleCreate = async () => {
+    await CommonApi.post("/prompts", prompt);
     closeModal();
   };
 

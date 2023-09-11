@@ -8,7 +8,6 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-app.use("/login", require("./routes/login"));
 app.use("/prompts", require("./routes/prompts"));
 app.use("/chats", require("./routes/chats"));
 

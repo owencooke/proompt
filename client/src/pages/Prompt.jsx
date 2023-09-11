@@ -116,7 +116,7 @@ function Prompt() {
     setTimeout(() => {
       setLoading(true);
     }, 2000);
-    const response = await CommonApi.post("/prompts", newChats);
+    const response = await CommonApi.post("/chats", newChats);
     setChats((prevChats) => [...prevChats, response]);
     setLoading(false);
   };
