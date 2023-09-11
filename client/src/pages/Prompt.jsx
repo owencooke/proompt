@@ -179,12 +179,14 @@ function Prompt() {
           onClick={handleSend}
         />
       </MessageWrapper>
-      <PromptEditDrawer
-        open={editDrawerOpen}
-        onSave={handleEdit}
-        onClose={handleCloseEdit}
-        initialPrompt={prompt}
-      />
+      {prompt && (
+        <PromptEditDrawer
+          open={editDrawerOpen}
+          onSave={handleEdit}
+          onClose={handleCloseEdit}
+          initialPrompt={prompt}
+        />
+      )}
     </>
   );
 }

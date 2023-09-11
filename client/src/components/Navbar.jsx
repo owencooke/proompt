@@ -1,7 +1,7 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { auth } from "../firebase.js";
-import { signOut } from "firebase/auth";
+import { signOut, onAuthStateChanged } from "firebase/auth";
 import { Avatar, Button } from "antd";
 import {
   UserOutlined,
@@ -95,6 +95,11 @@ const getInitials = (fullName) =>
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    return onAuthStateChanged(auth, (user) => setUser(user));
+  }, []);
 
   const handleClose = () => setIsOpen(false);
 
@@ -119,11 +124,11 @@ function Navbar() {
             size="large"
             icon={
               <Avatar
-                src={auth.currentUser?.photoURL}
+                src={user?.photoURL}
                 style={{ marginTop: "-4px" }}
-                icon={!auth.currentUser && <UserOutlined />}
+                icon={!user && <UserOutlined />}
               >
-                {getInitials(auth.currentUser?.displayName)}
+                {getInitials(user?.displayName)}
               </Avatar>
             }
           />
@@ -164,7 +169,7 @@ function Navbar() {
               FAQ
             </StyledLink>
             <StyledLink to="/login" onClick={handleLogout}>
-              {auth.currentUser ? "Logout" : "Login"}
+              {user ? "Logout" : "Login"}
             </StyledLink>
           </MenuDropdown>
           <BlurOverlay />

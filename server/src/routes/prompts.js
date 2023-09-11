@@ -14,16 +14,6 @@ router.post("/", verifyFirebaseToken, async (req, res) => {
   }
 });
 
-router.get("/:id", async (req, res) => {
-  try {
-    const { id } = req.params;
-    const promptDoc = await db.collection("prompts").doc(id).get();
-    res.status(200).json(promptDoc.data());
-  } catch (error) {
-    res.status(error.code || error.status || 500).json(error);
-  }
-});
-
 router.get("/library", verifyFirebaseToken, async (req, res) => {
   try {
     const userId = req.user.uid;
@@ -42,6 +32,16 @@ router.get("/library", verifyFirebaseToken, async (req, res) => {
       return null; // Handle missing documents
     });
     res.status(200).json(prompts.filter((prompt) => prompt !== null));
+  } catch (error) {
+    res.status(error.code || error.status || 500).json(error);
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const promptDoc = await db.collection("prompts").doc(id).get();
+    res.status(200).json(promptDoc.data());
   } catch (error) {
     res.status(error.code || error.status || 500).json(error);
   }
