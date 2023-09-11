@@ -1,17 +1,27 @@
 import axios from "axios";
+import { auth } from "./firebase";
 
 const BASE_URL = "http://localhost:7890";
-const BASE_CONFIG = {
-  "Content-Type": "application/json",
+
+const getConfig = async (config) => {
+  const firebaseToken = await auth.currentUser?.getIdToken();
+  return {
+    ...config,
+    headers: {
+      ...config.headers,
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${firebaseToken}`,
+    },
+  };
 };
 
 const CommonApi = {
   get: async (url, config = {}) => {
     try {
-      const response = await axios.get(`${BASE_URL}${url}`, {
-        ...BASE_CONFIG,
-        ...config,
-      });
+      const response = await axios.get(
+        `${BASE_URL}${url}`,
+        await getConfig(config)
+      );
       return response.data;
     } catch (error) {
       // throw error;
@@ -20,10 +30,11 @@ const CommonApi = {
 
   post: async (url, data = {}, config = {}) => {
     try {
-      const response = await axios.post(`${BASE_URL}${url}`, data, {
-        ...BASE_CONFIG,
-        ...config,
-      });
+      const response = await axios.post(
+        `${BASE_URL}${url}`,
+        data,
+        await getConfig(config)
+      );
       return response.data;
     } catch (error) {
       // throw error;
@@ -32,10 +43,11 @@ const CommonApi = {
 
   patch: async (url, data = {}, config = {}) => {
     try {
-      const response = await axios.patch(`${BASE_URL}${url}`, data, {
-        ...BASE_CONFIG,
-        ...config,
-      });
+      const response = await axios.patch(
+        `${BASE_URL}${url}`,
+        data,
+        await getConfig(config)
+      );
       return response.data;
     } catch (error) {
       // throw error;
@@ -44,10 +56,10 @@ const CommonApi = {
 
   delete: async (url, config = {}) => {
     try {
-      const response = await axios.delete(`${BASE_URL}${url}`, {
-        ...BASE_CONFIG,
-        ...config,
-      });
+      const response = await axios.delete(
+        `${BASE_URL}${url}`,
+        await getConfig(config)
+      );
       return response.data;
     } catch (error) {
       // throw error;
@@ -56,10 +68,11 @@ const CommonApi = {
 
   put: async (url, data = {}, config = {}) => {
     try {
-      const response = await axios.put(`${BASE_URL}${url}`, data, {
-        ...BASE_CONFIG,
-        ...config,
-      });
+      const response = await axios.put(
+        `${BASE_URL}${url}`,
+        data,
+        await getConfig(config)
+      );
       return response.data;
     } catch (error) {
       // throw error;

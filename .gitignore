@@ -25,3 +25,4 @@ dist-ssr
 
 # Config
 *.env
+fb_admin_key.json

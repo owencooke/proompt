@@ -1,7 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { styled } from "styled-components";
 import colors from "../colors.json";
-import { prompts } from "../mock/prompts";
 import PromptCard from "../components/PromptCard";
 import { Button, Select, Modal } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
@@ -38,16 +37,23 @@ const defaultPrompt = {
 };
 
 function Library() {
+  const [prompts, setPrompts] = useState([]);
+  const [newPrompt, setNewPrompt] = useState(defaultPrompt);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [prompt, setPrompt] = useState(defaultPrompt);
+
+  useEffect(() => {
+    CommonApi.get("/prompts/library")
+      .then((data) => setPrompts(data))
+      .catch();
+  }, [prompts]);
 
   const closeModal = () => {
     setIsModalOpen(false);
-    setPrompt(defaultPrompt);
+    setNewPrompt(defaultPrompt);
   };
 
   const handleCreate = async () => {
-    await CommonApi.post("/prompts", prompt);
+    await CommonApi.post("/prompts", newPrompt);
     closeModal();
   };
 
@@ -93,7 +99,7 @@ function Library() {
         onOk={handleCreate}
         onCancel={closeModal}
       >
-        <PromptFields prompt={prompt} setPrompt={setPrompt} />
+        <PromptFields prompt={newPrompt} setPrompt={setNewPrompt} />
       </Modal>
     </PageWrapper>
   );

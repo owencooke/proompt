@@ -6,6 +6,8 @@ const app = new express();
 // Middleware
 app.use(cors());
 app.use(express.json());
+const { verifyFirebaseToken } = require("./middleware/auth");
+app.use(verifyFirebaseToken);
 
 // Routes
 app.use("/prompts", require("./routes/prompts"));
