@@ -1,10 +1,16 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { auth } from "../firebase.js";
+import { signOut } from "firebase/auth";
+import { Avatar, Button } from "antd";
+import {
+  UserOutlined,
+  MenuOutlined,
+  CloseOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
 import { styled } from "styled-components";
 import colors from "../colors.json";
-import { ReactComponent as MenuIcon } from "../assets/menu.svg";
-import { ReactComponent as CloseIcon } from "../assets/x.svg";
-import { ReactComponent as SearchIcon } from "../assets/search-outline.svg";
 
 const NavWrapper = styled.div`
   position: relative;
@@ -21,6 +27,12 @@ const Nav = styled.div`
   font-size: 24px;
   padding-inline: 32px;
   user-select: none;
+`;
+
+const NavItems = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
 `;
 
 const MenuDropdown = styled.div`
@@ -66,17 +78,30 @@ const SearchInput = styled.input`
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: ${colors.primary};
-  font-size: 24px;
+  font-size: 20px;
   &:hover {
     color: ${colors.tertiary};
   }
 `;
 
+const getInitials = (fullName) =>
+  fullName
+    ? fullName
+        .split(" ")
+        .slice(0, 3)
+        .map((name) => name[0].toUpperCase())
+        .join("")
+    : "";
+
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
 
   const handleClose = () => setIsOpen(false);
+
+  const handleLogout = () => {
+    signOut(auth);
+    handleClose();
+  };
 
   return (
     <NavWrapper>
@@ -88,37 +113,47 @@ function Navbar() {
         >
           proompt
         </Link>
-        <div
-          style={{ cursor: "pointer" }}
-          onMouseEnter={() => setIsHovered(true)}
-          onMouseLeave={() => setIsHovered(false)}
-          onClick={() => setIsOpen((open) => !open)}
-        >
-          {isOpen ? (
-            <CloseIcon
-              height="36"
-              width="36"
-              stroke={isHovered ? colors.tertiary : colors.primary}
-            />
-          ) : (
-            <MenuIcon
-              height="36"
-              width="36"
-              fill={isHovered ? colors.tertiary : colors.primary}
-            />
-          )}
-        </div>
+        <NavItems>
+          <Button
+            type="text"
+            size="large"
+            icon={
+              <Avatar
+                src={auth.currentUser?.photoURL}
+                style={{ marginTop: "-4px" }}
+                icon={!auth.currentUser && <UserOutlined />}
+              >
+                {getInitials(auth.currentUser?.displayName)}
+              </Avatar>
+            }
+          />
+          <Button
+            type="text"
+            size="large"
+            icon={
+              isOpen ? (
+                <CloseOutlined
+                  style={{ color: colors.primary, fontSize: "24px" }}
+                />
+              ) : (
+                <MenuOutlined
+                  style={{ color: colors.primary, fontSize: "24px" }}
+                />
+              )
+            }
+            onClick={() => setIsOpen((open) => !open)}
+          />
+        </NavItems>
       </Nav>
       {isOpen && (
         <>
           <MenuDropdown>
             <SearchWrapper>
               <SearchInput placeholder="Search"></SearchInput>
-              <SearchIcon height="24" width="24" fill={colors.text} />
+              <SearchOutlined
+                style={{ color: colors.text, fontSize: "24px" }}
+              />
             </SearchWrapper>
-            <StyledLink to="/" onClick={handleClose}>
-              Profile
-            </StyledLink>
             <StyledLink to="/library" onClick={handleClose}>
               Library
             </StyledLink>
@@ -127,6 +162,9 @@ function Navbar() {
             </StyledLink>
             <StyledLink to="/" onClick={handleClose}>
               FAQ
+            </StyledLink>
+            <StyledLink to="/login" onClick={handleLogout}>
+              {auth.currentUser ? "Logout" : "Login"}
             </StyledLink>
           </MenuDropdown>
           <BlurOverlay />

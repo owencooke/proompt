@@ -1,10 +1,12 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../firebase";
 import {
   signInWithEmailAndPassword,
   GoogleAuthProvider,
   signInWithPopup,
   createUserWithEmailAndPassword,
+  updateProfile,
 } from "firebase/auth";
 import { GoogleLoginButton } from "react-social-login-buttons";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
@@ -25,10 +27,17 @@ const ActionWrapper = styled.div`
   align-items: center;
 `;
 
+const ErrorMessage = styled.span`
+  color: red;
+`;
+
 function SignIn() {
+  const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [registering, setRegistering] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   // Function to handle user login
   const handleLogin = async (provider) => {
@@ -39,17 +48,25 @@ function SignIn() {
         await signInWithPopup(auth, googleProvider);
       } else if (provider === "email") {
         if (registering) {
-          await createUserWithEmailAndPassword(email, password);
+          const { user } = await createUserWithEmailAndPassword(
+            auth,
+            email,
+            password
+          );
+          await updateProfile(user, {
+            displayName: name,
+          });
         } else {
-          await signInWithEmailAndPassword(email, password);
+          await signInWithEmailAndPassword(auth, email, password);
         }
-      } else {
-        throw new Error("Invalid login provider");
       }
-      // Redirect to previous page (hstory?)
+      // Redirect to previous page
+      navigate(-1);
     } catch (error) {
-      console.error("Login error:", error);
-      throw error;
+      console.log(error);
+      setError(
+        "The email or password provided is incorrect. Please try again."
+      );
     }
   };
 
@@ -57,11 +74,25 @@ function SignIn() {
     <PageWrapper>
       <h2>{registering ? "create an account" : "welcome back"}</h2>
       {registering ? "" : "please login to continue"}
+      {registering && (
+        <Input
+          size="large"
+          autoComplete="name"
+          placeholder="Name"
+          onChange={(e) => {
+            setName(e.target.value);
+            setError("");
+          }}
+        />
+      )}
       <Input
         size="large"
         autoComplete="email"
         placeholder="Email"
-        onChange={(e) => setEmail(e.target.value)}
+        onChange={(e) => {
+          setEmail(e.target.value);
+          setError("");
+        }}
       />
       <Input.Password
         size="large"
@@ -70,8 +101,12 @@ function SignIn() {
         iconRender={(visible) =>
           visible ? <EyeTwoTone /> : <EyeInvisibleOutlined />
         }
-        onChange={(e) => setPassword(e.target.value)}
+        onChange={(e) => {
+          setPassword(e.target.value);
+          setError("");
+        }}
       />
+      <ErrorMessage>{error}</ErrorMessage>
       <ActionWrapper>
         <Button
           type="link"
