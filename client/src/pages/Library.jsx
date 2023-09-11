@@ -45,7 +45,7 @@ function Library() {
     CommonApi.get("/prompts/library")
       .then((data) => setPrompts(data))
       .catch();
-  }, [prompts]);
+  }, []);
 
   const closeModal = () => {
     setIsModalOpen(false);
@@ -82,14 +82,8 @@ function Library() {
         onChange={handleChange}
         options={filters}
       />
-      {prompts.map((prompt, i) => (
-        <PromptCard
-          key={i}
-          title={prompt.title}
-          prompt={prompt.prompt}
-          variableCount={Object.keys(prompt.variables).length}
-          categories={prompt.categories}
-        />
+      {prompts.map((prompt, idx) => (
+        <PromptCard key={idx} prompt={prompt} />
       ))}
       <Modal
         bodyStyle={{ paddingBlock: "1.5rem" }}

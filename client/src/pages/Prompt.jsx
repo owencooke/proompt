@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { useLocation, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import colors from "../colors.json";
 import { Input, Button, Skeleton } from "antd";
@@ -54,18 +55,10 @@ const MessageWrapper = styled.div`
 
 const CorrectivePagePadding = 96;
 
-const testPrompt = {
-  title: "Marketing Email",
-  prompt: `Write a draft for my marketing email about $TOPIC$. Include a call-to-action that encourages people to $ACTION$. Write it to $AUDIENCE$ in a $TONE$ tone of voice.`,
-  variables: {
-    TOPIC: "a sale on TVs",
-    ACTION: "check out the deals online",
-    AUDIENCE: "the general public that watches TV",
-    TONE: "excited",
-  },
-};
-
 const getMsgFromPrompt = (prompt) => {
+  if (!prompt) {
+    return "";
+  }
   let message = prompt.prompt;
   for (const variable in prompt.variables) {
     message = message.replace(`$${variable}$`, prompt.variables[variable]);
@@ -74,9 +67,13 @@ const getMsgFromPrompt = (prompt) => {
 };
 
 function Prompt() {
+  const { id } = useParams();
+  const location = useLocation();
+
+  const [prompt, setPrompt] = useState(location.state?.prompt);
   const [chats, setChats] = useState([]);
   const [messageToSend, setMessageToSend] = useState(() =>
-    getMsgFromPrompt(testPrompt)
+    getMsgFromPrompt(prompt)
   );
   const [loading, setLoading] = useState(false);
 
@@ -84,6 +81,19 @@ function Prompt() {
   const [scrollPadding, setScrollPadding] = useState(0);
 
   const [editDrawerOpen, setEditDrawerOpen] = useState(false);
+
+  useEffect(() => {
+    setChats([]);
+    setMessageToSend(getMsgFromPrompt(prompt));
+  }, [prompt]);
+
+  useEffect(() => {
+    if (!location.state?.prompt) {
+      CommonApi.get(`/prompts/${id}`)
+        .then((data) => setPrompt(data))
+        .catch();
+    }
+  }, [id, location.state?.prompt]);
 
   useEffect(() => {
     const observer = new ResizeObserver((entries) => {
@@ -123,7 +133,7 @@ function Prompt() {
 
   const handleEdit = (newPrompt) => {
     // FIXME call to PATCH /prompts
-    setMessageToSend(getMsgFromPrompt(newPrompt));
+    setPrompt(newPrompt);
     setEditDrawerOpen(false);
   };
 
@@ -135,7 +145,7 @@ function Prompt() {
     <>
       <PageWrapper style={{ paddingBottom: `${scrollPadding}px` }}>
         <TitleWrapper>
-          title of prompt
+          {prompt?.title}
           <Button
             size="large"
             type="primary"
@@ -173,7 +183,7 @@ function Prompt() {
         open={editDrawerOpen}
         onSave={handleEdit}
         onClose={handleCloseEdit}
-        initialPrompt={testPrompt}
+        initialPrompt={prompt}
       />
     </>
   );

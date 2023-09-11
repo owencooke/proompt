@@ -36,6 +36,9 @@ function PromptFields(props) {
   const { prompt, setPrompt } = props;
 
   const renderVariables = () => {
+    if (!prompt) {
+      return <></>;
+    }
     const elements = Object.entries(prompt.variables).map(
       ([variable, value], index) => (
         <VariableRow key={`variable-${index}`}>
@@ -100,7 +103,7 @@ function PromptFields(props) {
             minHeight: "2.5rem",
             fontSize: "16px",
           }}
-          value={prompt.title}
+          value={prompt?.title}
           onChange={(e) =>
             setPrompt((oldPrompt) => ({ ...oldPrompt, title: e.target.value }))
           }
@@ -115,7 +118,7 @@ function PromptFields(props) {
             fontSize: "16px",
           }}
           autoSize={{ minRows: 3 }}
-          value={prompt.prompt}
+          value={prompt?.prompt}
           onChange={(e) =>
             setPrompt((oldPrompt) => ({ ...oldPrompt, prompt: e.target.value }))
           }

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { styled } from "styled-components";
 import colors from "../colors.json";
 import PropTypes from "prop-types";
@@ -49,8 +50,9 @@ const FilterTag = styled.div`
 `;
 
 function PromptCard(props) {
-  const { title, prompt, variableCount, categories } = props;
+  const { prompt } = props;
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   const menuItems = [
     {
@@ -72,8 +74,8 @@ function PromptCard(props) {
     },
   ];
 
-  const handleButtonClick = (e) => {
-    console.log("click left button", e);
+  const handleButtonClick = () => {
+    navigate(`/prompt/${prompt.id}`, { state: { prompt } });
   };
 
   const handleMenuClick = (e) => {
@@ -96,7 +98,7 @@ function PromptCard(props) {
   return (
     <CardWrapper>
       <TitleWrapper>
-        {title}
+        {prompt.title}
         <Dropdown.Button
           menu={{ items: menuItems, onClick: handleMenuClick }}
           onClick={handleButtonClick}
@@ -107,15 +109,17 @@ function PromptCard(props) {
       </TitleWrapper>
       {isOpen && (
         <>
-          <PromptText>{prompt}</PromptText>
+          <PromptText>{prompt.prompt}</PromptText>
           <Flexbox style={{ justifyContent: "space-between" }}>
             <Flexbox>
               <TagFilled style={{ color: colors.primary }} />
-              {categories.map((category, i) => (
+              {prompt.categories.map((category, i) => (
                 <FilterTag key={i}>{category}</FilterTag>
               ))}
             </Flexbox>
-            <PromptText>{variableCount} variables</PromptText>
+            <PromptText>
+              {Object.keys(prompt.variables).length} variables
+            </PromptText>
           </Flexbox>
         </>
       )}
@@ -123,16 +127,14 @@ function PromptCard(props) {
   );
 }
 
-PromptCard.defaultProps = {
-  variableCount: 0,
-  categories: [],
-};
-
 PromptCard.propTypes = {
-  title: PropTypes.string.isRequired,
-  prompt: PropTypes.string.isRequired,
-  variableCount: PropTypes.number,
-  categories: PropTypes.arrayOf(PropTypes.string),
+  prompt: PropTypes.shape({
+    id: PropTypes.string.isRequired,
+    title: PropTypes.string.isRequired,
+    prompt: PropTypes.string.isRequired,
+    variables: PropTypes.objectOf(PropTypes.string).isRequired,
+    categories: PropTypes.arrayOf(PropTypes.string).isRequired,
+  }),
 };
 
 export default PromptCard;
