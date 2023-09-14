@@ -1,18 +1,14 @@
 # proompt
 
-A web app for saving, reusing, and sharing your favourite AI prompts, built using the PERN tech stack (Postgres, Express, React and Node).
+A web app for saving, reusing, and sharing your favourite AI prompts, built using the FERN tech stack (Firebase, Express, React and Node).
 
-## Landing Page
+## Demo
 
-![Screenshot (615)](https://github.com/owencooke/proompt/assets/90405643/35e9e553-abcd-4b96-ba44-38ed09a81105)
+https://github.com/owencooke/proompt/assets/90405643/44b763fe-d7e6-42a1-8d9d-fb976b8939d8
 
-## Current Progress
+## Coming Soon
+- search functionality for prompts by keywords and categories
+- ability to add other people's prompts to your own library
+- explore page for the hottest and most used prompts
+- improved formatting for prompt variables, instead of text symbols
 
-Began implementing the UI for using Prompts, with chat bubbles and a send message bar.
-
-Also experimented using the OpenAI API with an Express backend, testing routes via Postman.
-
-See the project's [Figma design file](https://www.figma.com/file/yAReOYpwFXfgAT1j23mwOr/proompt?type=design&node-id=3%3A6&mode=design&t=JxQhzeXlr1peugGr-1) for upcoming features.
-
-> **Note**
-> This project was designed using the **mobile-first** strategy. Figma designs are created for mobile platforms and eventually will be extended for desktop after initial implementation and testing feature functionality.
