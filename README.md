@@ -2,8 +2,8 @@
 
 A web app for discovering, saving, and reusing your favourite AI prompts, built using the FERN tech stack (Firebase, Express, React and Node).
 <div>
-  <img src="https://github.com/owencooke/proompt/assets/90405643/c240c634-40f3-4e04-a7c9-8d759574195e" width="350">
-  <img src="https://github.com/owencooke/proompt/assets/90405643/3e516e8a-d55c-4b74-a534-f20174438343" width="650">
+  <img src="https://github.com/owencooke/proompt/assets/90405643/c240c634-40f3-4e04-a7c9-8d759574195e" width="250">
+  <img src="https://github.com/owencooke/proompt/assets/90405643/3e516e8a-d55c-4b74-a534-f20174438343" width="450">
 </div>
 
 > Pitching proompt at eHUB SPARK - Pitch Night 2023
